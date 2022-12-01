@@ -26,21 +26,40 @@ func main() {
 
 	readFile.Close()
 
-	var prev int = 1
-	var counter int
+	var currentCalSum, maxOne, maxTwo, maxThree int
+
+	fileLines = append(fileLines, "")
 
 	for _, line := range fileLines {
-		curr, _ := strconv.Atoi(line)
+		if line == "" {
+			if currentCalSum > maxOne {
+				maxThree = maxTwo
+				maxTwo = maxOne
+				maxOne = currentCalSum
+			} else if currentCalSum > maxTwo {
+				maxThree = maxTwo
+				maxTwo = currentCalSum
+			} else if currentCalSum > maxThree {
+				maxThree = currentCalSum
+			}
 
-		if curr > prev {
-			counter += 1
+			currentCalSum = 0
 		}
 
-		fmt.Println(line)
+		curr, _ := strconv.Atoi(line)
 
-		prev = curr
+		currentCalSum = currentCalSum + curr
+
 	}
 
-	fmt.Println(fileLines)
-	fmt.Println(counter)
+	var one = fmt.Sprintf("1: %d", maxOne)
+	fmt.Println(one)
+	var two = fmt.Sprintf("2: %d", maxTwo)
+	fmt.Println(two)
+	var three = fmt.Sprintf("3: %d", maxThree)
+	fmt.Println(three)
+
+	var max = fmt.Sprintf("sum: %d", maxOne+maxTwo+maxThree)
+	fmt.Println(max)
+
 }
