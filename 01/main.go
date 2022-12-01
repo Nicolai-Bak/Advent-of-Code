@@ -10,11 +10,7 @@ import (
 func main() {
 
 	filePath := os.Args[1]
-	readFile, err := os.Open(filePath)
-
-	if err != nil {
-		fmt.Println(err)
-	}
+	readFile, _ := os.Open(filePath)
 
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
@@ -26,9 +22,9 @@ func main() {
 
 	readFile.Close()
 
-	var currentCalSum, maxOne, maxTwo, maxThree int
-
 	fileLines = append(fileLines, "")
+
+	var currentCalSum, maxOne, maxTwo, maxThree int
 
 	for _, line := range fileLines {
 		if line == "" {
@@ -42,15 +38,14 @@ func main() {
 			} else if currentCalSum > maxThree {
 				maxThree = currentCalSum
 			}
-
 			currentCalSum = 0
 		}
 
 		curr, _ := strconv.Atoi(line)
-
 		currentCalSum = currentCalSum + curr
-
 	}
+
+	fmt.Println(fmt.Sprintf("sum: %d", maxOne+maxTwo+maxThree))
 
 	var one = fmt.Sprintf("1: %d", maxOne)
 	fmt.Println(one)
@@ -58,8 +53,5 @@ func main() {
 	fmt.Println(two)
 	var three = fmt.Sprintf("3: %d", maxThree)
 	fmt.Println(three)
-
-	var max = fmt.Sprintf("sum: %d", maxOne+maxTwo+maxThree)
-	fmt.Println(max)
 
 }
