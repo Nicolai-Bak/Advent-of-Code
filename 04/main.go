@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	// "strings"
 )
@@ -25,44 +26,36 @@ func main() {
 
 	var currentSum rune
 
-	// for _, line := range fileLines {
+	for _, line := range fileLines {
 
-	// 	length := len(line)
-	// 	line1 := line[0 : length/2]
-	// 	line2 := line[length/2 : length]
+		pairs := strings.Split(line, ",")
 
-	// 	for _, ch := range line1 {
+		pair0 := strings.Split(pairs[0], "-")
+		pair1 := strings.Split(pairs[1], "-")
 
-	// 		if strings.Contains(line2, fmt.Sprintf("%c", ch)) {
-	// 			var value rune = ch - 64 + 26
-	// 			if ch > 96 {
-	// 				value = ch - 96
-	// 			}
-	// 			fmt.Println(value)
-	// 			fmt.Printf("%c\n", ch)
-	// 			currentSum += value
-	// 			break
-	// 		}
-	// 	}
-	// }
+		pair00, _ := strconv.Atoi(pair0[0])
+		pair01, _ := strconv.Atoi(pair0[1])
+		pair10, _ := strconv.Atoi(pair1[0])
+		pair11, _ := strconv.Atoi(pair1[1])
 
-	for i := 2; i < len(fileLines); i += 3 {
+		// if pair00 <= pair10 && pair01 >= pair11 {
+		// 	currentSum++
+		// 	continue
+		// }
 
-		for _, ch := range fileLines[i] {
+		// if pair10 <= pair00 && pair11 >= pair01 {
+		// 	currentSum++
+		// 	continue
+		// }
 
-			if strings.Contains(fileLines[i-2], fmt.Sprintf("%c", ch)) {
-				if strings.Contains(fileLines[i-1], fmt.Sprintf("%c", ch)) {
-					var value rune = ch - 64 + 26
-					if ch > 96 {
-						value = ch - 96
-					}
-					fmt.Println(value)
-					fmt.Printf("%c\n", ch)
-					currentSum += value
-					break
-				}
-			}
+		if pair00 <= pair10 && pair01 >= pair10 {
+			currentSum++
+			continue
+		}
 
+		if pair00 >= pair10 && pair00 <= pair11 {
+			currentSum++
+			continue
 		}
 	}
 
