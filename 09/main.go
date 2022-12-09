@@ -8,14 +8,16 @@ import (
 	"strings"
 )
 
-var grid [800][800]int
+const size = 800
+
+var grid [size][size]int
 
 var fileLines []string
 
 var counter int
 
-var Hx = 400
-var Hy = 400
+var Hx = size / 2
+var Hy = Hx
 var Tx = Hx
 var Ty = Hy
 
@@ -30,6 +32,8 @@ func main() {
 		steps, _ := strconv.Atoi(cmd[1])
 
 		for i := 0; i < steps; i++ {
+			prevHy := Hy
+			prevHx := Hx
 			if dir == "D" {
 				Hy++
 			}
@@ -42,16 +46,11 @@ func main() {
 			if dir == "R" {
 				Hx++
 			}
-			if (dir == "R" || dir == "L") && Hx == Tx {
-				continue
-			}
-			if (dir == "U" || dir == "D") && Hy == Ty {
-				continue
-			}
-			if i != steps-1 {
-				grid[Hy][Hx] = 1
-				Ty = Hy
-				Tx = Hx
+
+			if Hy > Ty+1 || Hy < Ty-1 || Hx > Tx+1 || Hx < Tx-1 {
+				grid[prevHy][prevHx] = 1
+				Ty = prevHy
+				Tx = prevHx
 			}
 		}
 	}
@@ -60,7 +59,7 @@ func main() {
 		for _, c := range line {
 			counter += c
 		}
-		fmt.Println(line)
+		// fmt.Println(line)
 	}
 
 	fmt.Println(counter)
