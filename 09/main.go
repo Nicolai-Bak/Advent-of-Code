@@ -8,23 +8,28 @@ import (
 	"strings"
 )
 
-const size = 800
+var grid [800][800]int
 
-var grid [size][size]int
+// var path [22][26]string
 
 var fileLines []string
 
 var counter int
 
-var Hx = size / 2
-var Hy = Hx
-var Tx = Hx
-var Ty = Hy
+var Hx = 400
+var Hy = 400
+
+var Tx [9]int
+var Ty [9]int
 
 func main() {
 	readFile("./data.txt")
 
-	grid[Hy][Hx] = 1
+	for i := 0; i < len(Ty); i++ {
+		Ty[i] = Hy
+		Tx[i] = Hx
+	}
+	grid[Ty[8]][Tx[8]] = 1
 
 	for _, line := range fileLines {
 		cmd := strings.Split(line, " ")
@@ -47,12 +52,55 @@ func main() {
 				Hx++
 			}
 
-			if Hy > Ty+1 || Hy < Ty-1 || Hx > Tx+1 || Hx < Tx-1 {
-				grid[prevHy][prevHx] = 1
-				Ty = prevHy
-				Tx = prevHx
+			prevTx := Tx
+			prevTy := Ty
+
+			if Hy > Ty[0]+1 || Hy < Ty[0]-1 || Hx > Tx[0]+1 || Hx < Tx[0]-1 {
+				Ty[0] = prevHy
+				Tx[0] = prevHx
 			}
+
+			for j := 1; j < 9; j++ {
+				if Ty[j-1] > Ty[j]+1 || Ty[j-1] < Ty[j]-1 || Tx[j-1] > Tx[j]+1 || Tx[j-1] < Tx[j]-1 {
+					Ty[j] = prevTy[j-1]
+					Tx[j] = prevTx[j-1]
+
+					if prevTy[j-1] != Ty[j-1] && prevTx[j-1] != Tx[j-1] {
+						if prevTy[j-1] == prevTy[j] {
+							Ty[j] = Ty[j-1]
+						}
+						if prevTx[j-1] == prevTx[j] {
+							Tx[j] = Tx[j-1]
+						}
+					}
+					// if j == 8 {
+					// 	continue
+					// }
+					// if Ty[j-1] == Ty[j+1] {
+					// 	Ty[j] = Ty[j-1]
+					// }
+					// if Tx[j-1] == Tx[j+1] {
+					// 	Tx[j] = Tx[j-1]
+					// }
+				}
+			}
+
+			grid[Ty[8]][Tx[8]] = 1
+
 		}
+		// for k := 0; k < len(path); k++ {
+		// 	for l := 0; l < len(path[k]); l++ {
+		// 		path[k][l] = "."
+		// 	}
+		// }
+		// for j := 8; j >= 0; j-- {
+		// 	path[Ty[j]][Tx[j]] = fmt.Sprintf("%d", j+1)
+		// }
+		// path[Hy][Hx] = "H"
+		// for _, line := range path {
+		// 	fmt.Println(line)
+		// }
+		// fmt.Println()
 	}
 
 	for _, line := range grid {
@@ -61,7 +109,6 @@ func main() {
 		}
 		// fmt.Println(line)
 	}
-
 	fmt.Println(counter)
 }
 
