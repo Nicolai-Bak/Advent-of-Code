@@ -3,13 +3,10 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"math"
 	"os"
 )
 
-const ROUNDS int = 10_000
-
-var shortest int = math.MaxInt64
+var shortest int = 900
 
 var fileLines []string
 
@@ -51,35 +48,39 @@ func recursiveSearch(grid [][]rune, i int, j int, currentLength int) {
 			// }
 			// fmt.Println()
 			shortest = currentLength
+			fmt.Println(shortest)
 			grid[i][j] = curr
 			return
 		}
 	}
 
-	grid[i][j] = '.'
+	if currentLength < shortest {
 
-	if i > 0 {
-		if grid[i-1][j] != '.' && ((curr >= grid[i-1][j]-1 && grid[i-1][j] != 'E') || (grid[i-1][j] == 'E' && curr+1 >= 'z')) {
-			recursiveSearch(grid, i-1, j, currentLength+1)
-		}
-	}
-	if j > 0 {
-		if grid[i][j-1] != '.' && ((curr >= grid[i][j-1]-1 && grid[i][j-1] != 'E') || (grid[i][j-1] == 'E' && curr+1 >= 'z')) {
-			recursiveSearch(grid, i, j-1, currentLength+1)
-		}
-	}
-	if i < len(grid)-1 {
-		if grid[i+1][j] != '.' && ((curr >= grid[i+1][j]-1 && grid[i+1][j] != 'E') || (grid[i+1][j] == 'E' && curr+1 >= 'z')) {
-			recursiveSearch(grid, i+1, j, currentLength+1)
-		}
-	}
-	if j < len(grid[i])-1 {
-		if grid[i][j+1] != '.' && ((curr >= grid[i][j+1]-1 && grid[i][j+1] != 'E') || (grid[i][j+1] == 'E' && curr+1 >= 'z')) {
-			recursiveSearch(grid, i, j+1, currentLength+1)
-		}
-	}
+		grid[i][j] = '.'
 
-	grid[i][j] = curr
+		if i > 0 {
+			if grid[i-1][j] != '.' && ((curr >= grid[i-1][j]-1 && grid[i-1][j] != 'E') || (grid[i-1][j] == 'E' && curr+1 >= 'z')) {
+				recursiveSearch(grid, i-1, j, currentLength+1)
+			}
+		}
+		if j > 0 {
+			if grid[i][j-1] != '.' && ((curr >= grid[i][j-1]-1 && grid[i][j-1] != 'E') || (grid[i][j-1] == 'E' && curr+1 >= 'z')) {
+				recursiveSearch(grid, i, j-1, currentLength+1)
+			}
+		}
+		if i < len(grid)-1 {
+			if grid[i+1][j] != '.' && ((curr >= grid[i+1][j]-1 && grid[i+1][j] != 'E') || (grid[i+1][j] == 'E' && curr+1 >= 'z')) {
+				recursiveSearch(grid, i+1, j, currentLength+1)
+			}
+		}
+		if j < len(grid[i])-1 {
+			if grid[i][j+1] != '.' && ((curr >= grid[i][j+1]-1 && grid[i][j+1] != 'E') || (grid[i][j+1] == 'E' && curr+1 >= 'z')) {
+				recursiveSearch(grid, i, j+1, currentLength+1)
+			}
+		}
+
+		grid[i][j] = curr
+	}
 }
 
 func readFile(path string) {
