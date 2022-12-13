@@ -46,38 +46,40 @@ func recursiveSearch(grid [][]rune, i int, j int, currentLength int) {
 
 	if curr == 'E' {
 		if currentLength < shortest {
+			// for _, g := range grid {
+			// 	fmt.Printf("%c\n", g)
+			// }
+			// fmt.Println()
 			shortest = currentLength
+			grid[i][j] = curr
 			return
 		}
 	}
 
 	grid[i][j] = '.'
 
-	for _, g := range grid {
-		fmt.Printf("%c\n", g)
-	}
-	fmt.Println()
-
-	if i < len(grid)-1 {
-		if grid[i+1][j] != '.' && (curr >= grid[i+1][j]-1 || grid[i+1][j] == 'E') {
-			recursiveSearch(grid, i+1, j, currentLength+1)
-		}
-	}
-	if j < len(grid[i])-1 {
-		if grid[i][j+1] != '.' && (curr >= grid[i][j+1]-1 || grid[i][j+1] == 'E') {
-			recursiveSearch(grid, i, j+1, currentLength+1)
-		}
-	}
 	if i > 0 {
-		if grid[i-1][j] != '.' && (curr >= grid[i-1][j]-1 || grid[i-1][j] == 'E') {
+		if grid[i-1][j] != '.' && ((curr >= grid[i-1][j]-1 && grid[i-1][j] != 'E') || (grid[i-1][j] == 'E' && curr+1 >= 'z')) {
 			recursiveSearch(grid, i-1, j, currentLength+1)
 		}
 	}
 	if j > 0 {
-		if grid[i][j-1] != '.' && (curr >= grid[i][j-1]-1 || grid[i][j-1] == 'E') {
+		if grid[i][j-1] != '.' && ((curr >= grid[i][j-1]-1 && grid[i][j-1] != 'E') || (grid[i][j-1] == 'E' && curr+1 >= 'z')) {
 			recursiveSearch(grid, i, j-1, currentLength+1)
 		}
 	}
+	if i < len(grid)-1 {
+		if grid[i+1][j] != '.' && ((curr >= grid[i+1][j]-1 && grid[i+1][j] != 'E') || (grid[i+1][j] == 'E' && curr+1 >= 'z')) {
+			recursiveSearch(grid, i+1, j, currentLength+1)
+		}
+	}
+	if j < len(grid[i])-1 {
+		if grid[i][j+1] != '.' && ((curr >= grid[i][j+1]-1 && grid[i][j+1] != 'E') || (grid[i][j+1] == 'E' && curr+1 >= 'z')) {
+			recursiveSearch(grid, i, j+1, currentLength+1)
+		}
+	}
+
+	grid[i][j] = curr
 }
 
 func readFile(path string) {
