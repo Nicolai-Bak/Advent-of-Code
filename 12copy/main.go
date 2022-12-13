@@ -6,80 +6,76 @@ import (
 	"os"
 )
 
-var shortest int = 900
+type Node struct {
+	value     rune
+	friends   [4]*Node
+	usedSteps int
+}
+
+const rows = 41
+const columns = 136
+
+var startingNode *Node
 
 var fileLines []string
 
 func main() {
 	readFile("./data.txt")
 
-	var grid [][]rune
+	var nodes [rows][]Node
+
+	for i := 0; i < rows; i++ {
+		nodes[i] = make([]Node, columns)
+	}
 
 	//Create grid
-	for _, line := range fileLines {
-		var newLine []rune
-		for _, char := range line {
-			newLine = append(newLine, char)
-		}
-		grid = append(grid, newLine)
-	}
+	for row, line := range fileLines {
+		for column, char := range line {
+			nodes[row][column].value = char
+			nodes[row][column].usedSteps = 900
 
-	//Find S and call recursive method
-	for i := 0; i < len(grid); i++ {
-		for j := 0; j < len(grid[i]); j++ {
-			if grid[i][j] == 'S' {
-				recursiveSearch(grid, i, j, 0)
+			if row > 0 {
+				nodes[row][column].friends[0] = &nodes[row-1][column]
+			}
+			if row < rows-1 {
+				nodes[row][column].friends[1] = &nodes[row+1][column]
+			}
+			if column > 0 {
+				nodes[row][column].friends[2] = &nodes[row][column-1]
+			}
+			if column < columns-1 {
+				nodes[row][column].friends[3] = &nodes[row][column+1]
+			}
+
+			if char == 'S' {
+				nodes[row][column].value = 'a'
+
+				startingNode = &nodes[row][column]
 			}
 		}
 	}
-	fmt.Println(shortest)
+
+	recursiveSearch(startingNode, -1)
 }
 
-func recursiveSearch(grid [][]rune, i int, j int, currentLength int) {
-	curr := grid[i][j]
-	if curr == 'S' {
-		curr = 'a'
+func recursiveSearch(node *Node, usedSteps int) {
+	node.usedSteps = usedSteps + 1
+
+	if node.value == 'a' {
+		node.usedSteps = 0
+	} else if node.value == 'E' {
+		fmt.Println(node.usedSteps)
+		return
 	}
 
-	if curr == 'E' {
-		if currentLength < shortest {
-			// for _, g := range grid {
-			// 	fmt.Printf("%c\n", g)
-			// }
-			// fmt.Println()
-			shortest = currentLength
-			fmt.Println(shortest)
-			grid[i][j] = curr
-			return
-		}
-	}
-
-	if currentLength < shortest {
-
-		grid[i][j] = '.'
-
-		if i > 0 {
-			if grid[i-1][j] != '.' && ((curr >= grid[i-1][j]-1 && grid[i-1][j] != 'E') || (grid[i-1][j] == 'E' && curr+1 >= 'z')) {
-				recursiveSearch(grid, i-1, j, currentLength+1)
+	for i := 0; i < 4; i++ {
+		if node.friends[i] != nil {
+			if node.usedSteps+1 < node.friends[i].usedSteps &&
+				((node.friends[i].value == 'E' && node.value+1 >= 'z') ||
+					(node.friends[i].value != 'E' && node.value+1 >= node.friends[i].value)) {
+				recursiveSearch(node.friends[i], node.usedSteps)
 			}
 		}
-		if j > 0 {
-			if grid[i][j-1] != '.' && ((curr >= grid[i][j-1]-1 && grid[i][j-1] != 'E') || (grid[i][j-1] == 'E' && curr+1 >= 'z')) {
-				recursiveSearch(grid, i, j-1, currentLength+1)
-			}
-		}
-		if i < len(grid)-1 {
-			if grid[i+1][j] != '.' && ((curr >= grid[i+1][j]-1 && grid[i+1][j] != 'E') || (grid[i+1][j] == 'E' && curr+1 >= 'z')) {
-				recursiveSearch(grid, i+1, j, currentLength+1)
-			}
-		}
-		if j < len(grid[i])-1 {
-			if grid[i][j+1] != '.' && ((curr >= grid[i][j+1]-1 && grid[i][j+1] != 'E') || (grid[i][j+1] == 'E' && curr+1 >= 'z')) {
-				recursiveSearch(grid, i, j+1, currentLength+1)
-			}
-		}
-
-		grid[i][j] = curr
 	}
 }
 
